@@ -1,0 +1,82 @@
+﻿@{
+    ViewBag.Title = "Gantt Sample";
+}
+
+<div style="margin:20px">
+    <h2>customAdaptor with Gantt</h2>
+
+    <!-- ✅ Gantt Chart using @Html.EJS() fluent API -->
+    @Html.EJS().Gantt("Gantt").Height("500px").TreeColumnIndex(1).AllowSelection(true).HighlightWeekends(true).Toolbar(new List<string>() { "Add", "Edit", "Update", "Delete", "Cancel", "ExpandAll", "CollapseAll", "Indent", "Outdent" }).TaskFields(tf => tf
+            .Id("TaskID")
+            .Name("TaskName")
+            .StartDate("StartDate")
+            .EndDate("EndDate")
+            .Duration("Duration")
+            .Progress("Progress")
+            .Dependency("Dependency")
+            .ParentID("ParentID")
+            .Segments("Segments")
+            .ResourceInfo("ResourceInfos")
+        ).ResourceFields(rf => rf
+            .Id("resourceId")
+            .Name("resourceName")
+            .Unit("resourceUnit")
+            .Group("resourceGroup")
+        ).Resources(new List<object>()
+        {
+            new { resourceId = 1, resourceName = "Martin Tamer" },
+            new { resourceId = 2, resourceName = "Rose Fuller" },
+            new { resourceId = 3, resourceName = "Margaret Buchanan" },
+            new { resourceId = 4, resourceName = "Fuller King" },
+            new { resourceId = 5, resourceName = "Davolio Fuller" },
+            new { resourceId = 6, resourceName = "Van Jack" },
+            new { resourceId = 7, resourceName = "Fuller Buchanan" },
+            new { resourceId = 8, resourceName = "Jack Davolio" },
+            new { resourceId = 9, resourceName = "Tamer Vinet" },
+            new { resourceId = 10, resourceName = "Vinet Fuller" },
+            new { resourceId = 11, resourceName = "Bergs Anton" },
+            new { resourceId = 12, resourceName = "Construction Supervisor" }
+        }).AllowSorting(true).AllowFiltering(true).EditSettings(es => es
+            .AllowEditing(true)
+            .AllowAdding(true)
+            .AllowDeleting(true)
+            .AllowTaskbarEditing(true)
+        ).Created("onGanttCreated").Render();
+</div>
+
+<script>
+    // ✅ Custom ODataV4 Adaptor with Authorization Header (optional)
+    class CustomAdaptor extends ej.data.ODataV4Adaptor {
+        
+        beforeSend(dm, request, settings) {
+            if (request) {
+                request.headers.set("Authorization", "Bearer your-token-here");
+            }
+            return super.beforeSend(dm, request, settings);
+        }
+
+        processQuery(dm, query) {
+            return super.processQuery.apply(this, arguments);
+        }
+
+        processResponse() {
+            const original = super.processResponse.apply(this, arguments);
+            return original;
+        }
+    }
+
+    // ✅ Initialize on Gantt creation
+    function onGanttCreated() {
+        let ganttObj = document.getElementById("Gantt").ej2_instances[0];
+        
+        // Optional: Replace with custom adaptor if needed
+        // Uncomment to use custom adaptor instead of default ODataV4Adaptor
+        
+        ganttObj.dataSource = new ej.data.DataManager({
+            url: "https://localhost:7284/odata/GanttTasks",
+            adaptor: new CustomAdaptor(),
+            key: "TaskID"
+        });
+       
+    }
+</script>
