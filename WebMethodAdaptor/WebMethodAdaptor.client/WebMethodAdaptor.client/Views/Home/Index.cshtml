@@ -1,0 +1,24 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+@Html.EJS().Gantt("Gantt").Height("500px").DataSource(dataManger =>
+        {
+            dataManger.Url("https://localhost:7052/api/Gantt")
+                .Adaptor("WebMethodAdaptor")
+                .CrossDomain(true)
+                .Key("TaskID");
+        }).TreeColumnIndex(1).AllowSelection(true).HighlightWeekends(true).Toolbar(new List<string>() { "Add", "Edit", "Update", "Delete", "Cancel", "ExpandAll", "CollapseAll", "Indent", "Outdent" }).TaskFields(tf => tf
+            .Id("TaskID")
+            .Name("TaskName")
+            .StartDate("StartDate")
+            .EndDate("EndDate")
+            .Duration("Duration")
+            .Progress("Progress")
+            .Dependency("Dependency")
+            .ParentID("ParentID")).EditSettings(es => es
+            .AllowEditing(true)
+            .AllowAdding(true)
+            .AllowDeleting(true)
+            .AllowTaskbarEditing(true)
+        ).Render();
