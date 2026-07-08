@@ -1,0 +1,53 @@
+﻿@{
+    ViewBag.Title = "ODataV4Adaptor with Gantt";
+}
+
+<h2>ODataV4Adaptor with Gantt</h2>
+
+<div style="margin:20px">
+    @Html.EJS().Gantt("Gantt").DataSource(dataManger =>
+        {
+            dataManger.Url("https://localhost:7284/odata/GanttTasks")
+                .Adaptor("ODataV4Adaptor")
+                .CrossDomain(true)
+                .Key("TaskID");
+        }).TaskFields(ts => ts
+            .Id("TaskID")
+            .Name("TaskName")
+            .StartDate("StartDate")
+            .EndDate("EndDate")
+            .Duration("Duration")
+            .Progress("Progress")
+            .Dependency("Dependency")
+            .ParentID("ParentID")
+            .Segments("Segments")
+            .ResourceInfo("ResourceInfos")
+        ).ResourceFields(rf => rf
+            .Id("resourceId")
+            .Name("resourceName")
+            .Unit("resourceUnit")
+            .Group("resourceGroup")
+        ).Resources(new List<object>()
+        {
+            new { resourceId = 1, resourceName = "Martin Tamer" },
+            new { resourceId = 2, resourceName = "Rose Fuller" },
+            new { resourceId = 3, resourceName = "Margaret Buchanan" },
+            new { resourceId = 4, resourceName = "Fuller King" },
+            new { resourceId = 5, resourceName = "Davolio Fuller" },
+            new { resourceId = 6, resourceName = "Van Jack" },
+            new { resourceId = 7, resourceName = "Fuller Buchanan" },
+            new { resourceId = 8, resourceName = "Jack Davolio" },
+            new { resourceId = 9, resourceName = "Tamer Vinet" },
+            new { resourceId = 10, resourceName = "Vinet Fuller" },
+            new { resourceId = 11, resourceName = "Bergs Anton" },
+            new { resourceId = 12, resourceName = "Construction Supervisor" }
+        }).EditSettings(es => es
+            .AllowAdding(true)
+            .AllowEditing(true)
+            .AllowDeleting(true)
+            .AllowTaskbarEditing(true)
+        ).Toolbar(new List<string>()
+        {
+            "Add", "Edit", "Update", "Delete", "Cancel",
+            "ExpandAll", "CollapseAll", "Indent", "Outdent"
+        }).EnableContextMenu(true).Height("400px").Render();
